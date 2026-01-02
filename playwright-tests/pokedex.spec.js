@@ -10,4 +10,14 @@ describe('Pokedex', () => {
       )
     ).toBeVisible()
   })
+
+  test('navigation to pokemon page works', async ({ page }) => {
+    await page.goto('pokemon/ivysaur')
+    await expect(page.getByText('chlorophyll')).toBeVisible()
+    await expect(page.getByText('overgrow')).toBeVisible()
+    const row = page.getByRole('row', {
+      name: /special attack 80/i,
+    })
+    await expect(row).toBeVisible()
+  })
 })
