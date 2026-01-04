@@ -57,6 +57,11 @@ const App = () => {
           />
         }
       />
+      <Route
+        exact
+        path="/version"
+        element={<div>Version 1.0.0</div>}
+      />
     </Routes>
   )
 }
