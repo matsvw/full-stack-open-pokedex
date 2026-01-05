@@ -36,18 +36,18 @@ jobs:
         run: npm test
 
       - name: Install Playwright Browsers
-        if: ${{ env.SKIP_PLAYWRIGHT != 'true'}}
+        if: ${{ !env.SKIP_PLAYWRIGHT }}
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
-        if: ${{ env.SKIP_PLAYWRIGHT != 'true'}}
+        if: ${{ !env.SKIP_PLAYWRIGHT }}
         run: npm run test:e2e
 
       - name: Build application
         run: npm run build
 
       - name: Deploy to Azure Web App (on push to main)
-        if: ${{ env.SKIP_DEPLOY != 'true'}}
+        if: ${{ !env.SKIP_DEPLOY }}
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'mats-pokedex'
@@ -58,12 +58,11 @@ jobs:
   tag_and_release:
     needs: [test-build-deploy]
     runs-on: ubuntu-latest
-    if: vars.SKIP_DEPLOY != 'true'
 
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
-
+        if: ${{ !env.SKIP_DEPLOY }}
         uses: anothrNick/github-tag-action@1.75.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
