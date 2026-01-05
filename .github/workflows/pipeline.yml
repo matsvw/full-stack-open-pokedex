@@ -10,7 +10,7 @@ on:
     types: [opened, synchronize]
 
 env:
-  SKIP_DEPLOY: ${{ (github.event_name == 'push' && contains(join(github.event.commits.*.message, ''),'#skip')) || false }}
+  SKIP_DEPLOY: ${{ (github.event_name == 'push' && contains(join(github.event.commits.*.message, ''),'#skip')) && 'true' || 'false' }}
 
 jobs:
   test-build-deploy:
@@ -44,7 +44,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to Azure Web App (on push to main)
-        if: ${{ !env.SKIP_DEPLOY }}
+        if: ${{ env.SKIP_DEPLOY != 'true'}}
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'mats-pokedex'
@@ -55,7 +55,7 @@ jobs:
   tag_release:
     needs: [test-build-deploy]
     runs-on: ubuntu-latest
-    if: !vars.SKIP_DEPLOY
+    if: vars.SKIP_DEPLOY != 'true'
 
     steps:
       - uses: actions/checkout@v4
