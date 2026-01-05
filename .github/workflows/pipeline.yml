@@ -44,7 +44,20 @@ jobs:
         run: npm run test:e2e
 
       - name: Build application
+        if: success()
+        continue-on-error: true
         run: npm run build
+
+      - name: Notify Discord of failed build
+        uses: rjstone/discord-webhook-notify@v2
+        if: failure()
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: info
+          color: '#a61e1eff'
+          title: 'Pokedex build failed :x:'
+          description: 'Build failed on commit ${{ github.sha }} by ${{ github.actor }}.'
+          footer: 'This is an automated message'
 
       - name: Upload build artifact
         if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ''), '#skip') }}
@@ -86,3 +99,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: 'patch'
+
+      - name: Notify Discord of successful deployment
+        uses: rjstone/discord-webhook-notify@v2
+        if: success()
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          severity: info
+          color: '#134a0bff'
+          title: 'A new version of the Pokedex has been deployed :tada:'
+          footer: 'This is an automated message'
