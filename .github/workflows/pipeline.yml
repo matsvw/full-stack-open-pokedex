@@ -100,6 +100,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: 'patch'
 
+      - name: Debug webhook
+        run: |
+          echo "Length: ${#DISCORD_WEBHOOK}"
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+
       - name: Notify Discord of successful deployment
         uses: rjstone/discord-webhook-notify@v2
         if: ${{ success() }}
