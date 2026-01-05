@@ -64,7 +64,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-output
-          path: dist/
+          path: .
 
   tag_and_release:
     needs: [test-build-deploy]
@@ -84,12 +84,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-output
-          path: dist
+          path: .
 
       - name: Debug artifact contents
         run: |
-          echo "Contents of dist:"
-          ls -R dist
+          echo "Contents of deployment:"
+          ls -R .
 
       - name: Deploy to Azure Web App (on push to main)
         uses: azure/webapps-deploy@v3
@@ -97,7 +97,7 @@ jobs:
           app-name: 'mats-pokedex'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           slot-name: 'Production'
-          package: dist
+          package: .
 
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.75.0
