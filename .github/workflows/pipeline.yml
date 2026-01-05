@@ -40,7 +40,7 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Deploy to Azure Web App
+      - name: Deploy to Azure Web App (on push to main)
         if: ${{ github.event_name == 'push' }}
         uses: azure/webapps-deploy@v3
         with:
