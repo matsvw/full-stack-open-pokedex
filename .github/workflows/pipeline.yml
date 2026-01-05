@@ -52,7 +52,7 @@ jobs:
           slot-name: 'Production'
           package: .
 
-  tag_release:
+  tag_and_release:
     needs: [test-build-deploy]
     runs-on: ubuntu-latest
     if: vars.SKIP_DEPLOY != 'true'
