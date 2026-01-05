@@ -53,7 +53,9 @@ jobs:
           username: 'Pokedex'
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: 'Pokedex build failed :x:'
-          embed-description: 'Build failed on commit ${{ github.sha }} by ${{ github.actor }}.'
+          embed-description: |
+            Build failed on commit ${{ github.sha }} by ${{ github.actor }}.
+            View the failed run: [Run #${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           embed-color: 15548997
           embed-author-name: ${{ github.actor }}
 
@@ -115,6 +117,8 @@ jobs:
           username: 'Pokedex'
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: 'Pokedex deployment'
-          embed-description: 'A new version of the Pokedex has been deployed :tada:'
+          embed-description: |
+            A new version of the Pokedex has been deployed by ${{ github.actor }} :tada:
+            View the deployment run: [Run #${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           embed-color: 5763719
           embed-author-name: ${{ github.actor }}
