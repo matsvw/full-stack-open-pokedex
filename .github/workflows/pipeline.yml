@@ -10,7 +10,8 @@ on:
     types: [opened, synchronize]
 
 env:
-  SKIP_DEPLOY: ${{ (github.event_name == 'push' && contains(join(github.event.commits.*.message, ''),'#skip')) && 'true' || 'false' }}
+  SKIP_DEPLOY: ${{ (github.event_name != 'push' || contains(join(github.event.commits.*.message, ''),'#skip')) }}
+  SKIP_PLAYWRIGHT: true
 
 jobs:
   test-build-deploy:
@@ -35,9 +36,11 @@ jobs:
         run: npm test
 
       - name: Install Playwright Browsers
+        if: ${{ env.SKIP_PLAYWRIGHT != 'true'}}
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
+        if: ${{ env.SKIP_PLAYWRIGHT != 'true'}}
         run: npm run test:e2e
 
       - name: Build application
