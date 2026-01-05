@@ -44,8 +44,6 @@ jobs:
         run: npm run test:e2e
 
       - name: Build application
-        if: ${{ success() }}
-        continue-on-error: true
         run: npm run build
 
       - name: Discord Webhook Action
