@@ -44,13 +44,13 @@ jobs:
         run: npm run test:e2e
 
       - name: Build application
-        if: success()
+        if: ${{ success() }}
         continue-on-error: true
         run: npm run build
 
       - name: Notify Discord of failed build
         uses: rjstone/discord-webhook-notify@v2
-        if: failure()
+        if: ${{ failure() }}
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           severity: info
@@ -102,7 +102,7 @@ jobs:
 
       - name: Notify Discord of successful deployment
         uses: rjstone/discord-webhook-notify@v2
-        if: success()
+        if: ${{ success() }}
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
           severity: info
