@@ -44,20 +44,20 @@ jobs:
         run: npm run test:e2e
 
       - name: Build application
-        if: ${{ success() }}
-        continue-on-error: true
         run: npm run build
 
-      - name: Notify Discord of failed build
-        uses: rjstone/discord-webhook-notify@v2
+      - name: Discord Webhook Action
+        uses: tsickert/discord-webhook@v7.0.0
         if: ${{ failure() }}
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          severity: info
-          color: '#a61e1eff'
-          title: 'Pokedex build failed :x:'
-          description: 'Build failed on commit ${{ github.sha }} by ${{ github.actor }}.'
-          footer: 'This is an automated message'
+          username: 'Pokedex'
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          embed-title: 'Pokedex build failed :x:'
+          embed-description: |
+            Build failed on commit ${{ github.sha }} by ${{ github.actor }}.
+            View the failed run: [Run #${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          embed-color: 15548997
+          embed-author-name: ${{ github.actor }}
 
       - name: Upload build artifact
         if: ${{ github.event_name == 'push' && !contains(join(github.event.commits.*.message, ''), '#skip') }}
@@ -86,6 +86,11 @@ jobs:
           name: build-output
           path: dist
 
+      - name: Debug artifact contents
+        run: |
+          echo "Contents of dist:"
+          ls -R dist
+
       - name: Deploy to Azure Web App (on push to main)
         uses: azure/webapps-deploy@v3
         with:
@@ -112,6 +117,8 @@ jobs:
           username: 'Pokedex'
           webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
           embed-title: 'Pokedex deployment'
-          embed-description: 'A new version of the Pokedex has been deployed :tada:'
+          embed-description: |
+            A new version of the Pokedex has been deployed by ${{ github.actor }} :tada:
+            View the deployment run: [Run #${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           embed-color: 5763719
           embed-author-name: ${{ github.actor }}
