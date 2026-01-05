@@ -84,7 +84,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-output
-          path: dist # where Azure deploy expects it
+          path: dist
 
       - name: Deploy to Azure Web App (on push to main)
         uses: azure/webapps-deploy@v3
@@ -106,12 +106,12 @@ jobs:
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
-      - name: Notify Discord of successful deployment
-        uses: rjstone/discord-webhook-notify@v2
-        if: ${{ success() }}
+      - name: Discord Webhook Action
+        uses: tsickert/discord-webhook@v7.0.0
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          severity: info
-          color: '#134a0bff'
-          title: 'A new version of the Pokedex has been deployed :tada:'
-          footer: 'This is an automated message'
+          username: 'Pokedex'
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          embed-title: 'Pokedex deployment'
+          embed-description: 'A new version of the Pokedex has been deployed :tada:'
+          embed-color: 5763719
+          embed-author-name: ${{ github.actor }}
